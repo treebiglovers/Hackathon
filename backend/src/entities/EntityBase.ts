@@ -11,6 +11,11 @@ export abstract class EntityBase
     {
         return this._id.toString();
     }
+    
+    set id(value)
+    {
+        // Do nothing. This is a dummy setter to allow Object.assign() to work, even if there's an id field.
+    }
 
     protected constructor()
     {
