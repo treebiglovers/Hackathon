@@ -19,6 +19,14 @@ export const ValidateSchemaMiddlewareKeyed = (
     return ValidateSchemaMiddleware(schema, passthrough, isQueryParam);
 }
 
+const TRANSFORMED_QUERY_FIELD_NAME = "TRANSFORMED_QUERY_FIELD"
+
+export const getTransformedQueryField = (req: Request) =>
+{
+    // @ts-ignore
+    return req[TRANSFORMED_QUERY_FIELD_NAME];
+}
+
 export const ValidateSchemaMiddleware = (
     schema: Zod.ZodObject<any>,
     passthrough = false,
@@ -42,7 +50,16 @@ export const ValidateSchemaMiddleware = (
         );
     }
 
-    req.body = parsedResult.data;
+    if (isQueryParam)
+    {
+        // @ts-ignore
+        req[TRANSFORMED_QUERY_FIELD_NAME] = parsedResult.data;
+    }
+    
+    else
+    {    
+        req.body = parsedResult.data;
+    }
 
     next();
 }
