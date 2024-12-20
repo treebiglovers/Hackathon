@@ -29,7 +29,7 @@ import { useMemberData } from "@app/services/MemberService.ts";
 import { useShallow } from "zustand/react/shallow";
 import { Link } from "@tanstack/react-router";
 
-const DEFAULT_TAB: TabData = { name: "CCA List", value: "/" };
+const DEFAULT_TAB: TabData = { name: "Listings", value: "/" };
 
 type TabData =
 {
@@ -40,7 +40,6 @@ type TabData =
 const tabs: TabData[] =
 [
     DEFAULT_TAB,
-    { name: "Member List", value: "/members" },
 ];
 
 export const NavBar = () =>
