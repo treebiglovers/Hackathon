@@ -11,13 +11,13 @@ export class MemberListingEntity extends EntityBase
     @Property()
     description: string;
 
-    @Property()
+    @Property({ nullable: true })
     iconURL: string | null;
 
-    @Property()
+    @Property({ nullable: true })
     requiredStars: number | null;
     
-    @Property()
+    @Property({ nullable: true })
     price: number | null;
     
     @Property()

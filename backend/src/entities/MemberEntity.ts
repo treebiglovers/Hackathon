@@ -7,8 +7,8 @@ export class MemberEntity extends EntityBase
 {
     @Property()
     name: string;
-    
-    @Property()
+
+    @Property({ nullable: true })
     avatarURL: string | null;
 
     @OneToOne(() => MemberCredentialsEntity)
