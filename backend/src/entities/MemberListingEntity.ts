@@ -14,10 +14,10 @@ export class MemberListingEntity extends EntityBase
     @Property({ nullable: true })
     iconURL: string | null;
 
-    @Property({ nullable: true })
+    @Property({ nullable: true, columnType: "int" })
     requiredStars: number | null;
-    
-    @Property({ nullable: true })
+
+    @Property({ nullable: true, columnType: "int" })
     price: number | null;
     
     @Property()
