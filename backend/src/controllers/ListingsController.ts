@@ -10,6 +10,12 @@ import
     MemberListingWithOwningMemberDTOSchema
 } from "@common/dtos/members/listings/MemberListingWithOwningMemberDTO";
 import { getTransformedQueryField } from "@backend/middlewares/ValidateSchemaMiddleware";
+import { ErrorDTO } from "@common/dtos/errors/ErrorDTO";
+import
+{
+    MemberListingUpdateDTO,
+    MemberListingUpdateDTOSchema,
+} from "@common/dtos/members/listings/MemberListingUpdateDTO";
 
 export const createListingController = async (
     req: Request,
@@ -59,3 +65,40 @@ export const getListingsForAuthenticatedMemberController = async (
         currentMember.listings.map(x => MemberListingDTOSchema.parse(x))
     );
 };
+
+export const updateListingController = async (
+    req: Request,
+    res: Response) =>
+{
+    const memberListingsRepo = DI.memberListingsRepo;
+
+    const memberListing = await memberListingsRepo.findOne(
+        { id: req.params.id }
+    );
+    
+    if (memberListing === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            ErrorDTO.fromCustom("Listing not found.")
+        );
+    }
+    
+    const currentMember = getAuthenticatedMemberEntity(req);
+    
+    if (memberListing.owningMember.id !== currentMember.id)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("You do not own this listing.")
+        );
+    }
+
+    const memberListingDTO: MemberListingUpdateDTO = req.body;
+    
+    Object.assign(memberListing, memberListingDTO);
+    
+    await DI.entityManager.flush();
+
+    res.json(MemberListingUpdateDTOSchema.parse(memberListing));
+}
