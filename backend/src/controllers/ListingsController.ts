@@ -66,6 +66,10 @@ export const getListingsForAuthenticatedMemberController = async (
     );
 };
 
+const LISTING_NOT_FOUND_ERROR = ErrorDTO.fromCustom("Listing not found.");
+
+const LISTING_NOT_OWNED_ERROR = ErrorDTO.fromCustom("You do not own this listing.");
+
 export const updateListingController = async (
     req: Request,
     res: Response) =>
@@ -80,7 +84,7 @@ export const updateListingController = async (
     {
         return ResponseHelpers.respondWithNotFoundError(
             res,
-            ErrorDTO.fromCustom("Listing not found.")
+            LISTING_NOT_FOUND_ERROR
         );
     }
     
@@ -90,7 +94,7 @@ export const updateListingController = async (
     {
         return ResponseHelpers.respondWithBadRequestError(
             res,
-            ErrorDTO.fromCustom("You do not own this listing.")
+            LISTING_NOT_OWNED_ERROR
         );
     }
 
@@ -101,4 +105,42 @@ export const updateListingController = async (
     await DI.entityManager.flush();
 
     res.json(MemberListingUpdateDTOSchema.parse(memberListing));
+}
+
+export const deleteListingController = async (
+    req: Request,
+    res: Response) =>
+{
+    const memberListingsRepo = DI.memberListingsRepo;
+
+    const memberListing = await memberListingsRepo.findOne(
+        { id: req.params.id }
+    );
+    
+    if (memberListing === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            LISTING_NOT_FOUND_ERROR
+        );
+    }
+    
+    const currentMember = getAuthenticatedMemberEntity(req);
+    
+    if (memberListing.owningMember.id !== currentMember.id)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            LISTING_NOT_OWNED_ERROR
+        );
+    }
+
+    await memberListingsRepo
+        .getEntityManager()
+        .removeAndFlush(memberListing);
+    
+    ResponseHelpers.respondWithSuccessMessage(
+        res,
+        "Listing deleted."
+    );
 }

@@ -5,7 +5,7 @@ import { ValidateSchemaMiddleware, ValidateSchemaMiddlewareKeyed } from "@backen
 
 import
 {
-    createListingController,
+    createListingController, deleteListingController,
     getListingsController,
     getListingsForAuthenticatedMemberController, updateListingController,
 } from "@backend/controllers/ListingsController";
@@ -51,4 +51,13 @@ LISTINGS_ROUTER.put(
         GetAuthenticatedMemberMiddleware([]),
     ],
     updateListingController
+);
+
+LISTINGS_ROUTER.delete(
+    "/:id",
+    [
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    deleteListingController
 );
