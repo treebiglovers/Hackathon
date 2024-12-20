@@ -39,10 +39,6 @@ export const MemberListingDTOSchema = OptionalEntityBaseSchema.extend(
         .number()
         .nonnegative()
         .optional(),
-    
-    state: zod
-        .nativeEnum(MemberListingState)
-        .optional(),
 });
 
 export type MemberListingDTO = zod.infer<typeof MemberListingDTOSchema>;
