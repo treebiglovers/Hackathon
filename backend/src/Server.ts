@@ -2,14 +2,13 @@ import http from "http";
 import "reflect-metadata";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
-import { EntityManager, EntityRepository, MikroORM, RequestContext } from "@mikro-orm/mongodb";
-import { MongoHighlighter } from "@mikro-orm/mongo-highlighter";
-import { EntityBase, MemberEntity,  } from "./entities";
-import { MemberCredentialsEntity } from "./entities/MemberCredentialsEntity";
+import { EntityManager, EntityRepository, MikroORM, RequestContext } from "@mikro-orm/mysql";
+import { MemberEntity, MemberCredentialsEntity } from "./entities";
 import { API_ROUTER } from "./routes/APIRouter";
 import { ResponseHelpers } from "@backend/helpers/ResponseHelpers";
 import { ErrorDTO } from "@common/dtos/errors/ErrorDTO";
 import cors from "cors";
+import defineConfig from "../src/mikro-orm.config";
 
 export const DI = {} as
 {
@@ -30,14 +29,7 @@ const PORT = process.env.PORT || 6969;
 
 export const startAsync = (async () =>
 {
-    DI.orm = await MikroORM.init({
-        entities: [ EntityBase, MemberEntity, MemberCredentialsEntity,  ],
-        dbName: "LendMe",
-        clientUrl: process.env.DB_CLIENT_URL,
-        highlighter: new MongoHighlighter(),
-        debug: true,
-        ensureIndexes: true, // https://mikro-orm.io/docs/usage-with-mongo#indexes
-    });
+    DI.orm = await MikroORM.init(defineConfig);
 
     const entityManager = DI.entityManager = DI.orm.em;
 

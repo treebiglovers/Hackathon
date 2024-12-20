@@ -15,4 +15,18 @@ export class SnowflakeHelpers
     {
         return SnowflakeHelpers.SNOWFLAKE_GENERATOR.getUniqueID();
     }
+    
+    public static isSnowflakeID(id: string): boolean
+    {
+        try
+        {
+            Snowflake.timestampFromID(BigInt(id), this.SNOWFLAKE_GENERATOR.customEpoch());
+            return true;
+        }
+        
+        catch (error)
+        {
+            return false;
+        }
+    }
 }

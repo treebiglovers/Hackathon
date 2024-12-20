@@ -1,4 +1,4 @@
-import { Entity, OneToOne, Property } from "@mikro-orm/mongodb";
+import { Entity, OneToOne, Property } from "@mikro-orm/mysql";
 import { EntityBase } from "./";
 import { MemberCredentialsEntity } from "./MemberCredentialsEntity";
 

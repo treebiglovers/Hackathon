@@ -27,16 +27,21 @@ export const registerMemberController = async (
     const membersRepo = DI.memberRepo;
 
     const memberEntity = new MemberEntity(name, credentialsEntity);
+    
+    const entityManager = membersRepo.getEntityManager();
 
     try
     {
-        await membersRepo.getEntityManager().persist(memberEntity).flush();
+        await entityManager.persist(memberEntity).flush();
     }
 
     catch (error)
     {
         if (error instanceof UniqueConstraintViolationException)
         {
+            // Clear the entity manager, otherwise the findOne will still cause unique constraint violation
+            entityManager.clear();
+
             if ((await DI.memberCredentialsRepo.findOne({ email: email })) !== null)
             {
                 return ResponseHelpers.respondWithBadRequestError(
