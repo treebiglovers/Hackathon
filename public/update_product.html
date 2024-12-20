@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/ecommerce.js"></script>
+    <link rel = "stylesheet" href = "css/product.css">
+    <title>Update or Delete</title>
+</head>
+<body onload = "updateOnLoad()">
+    <header class = "header">
+        <p class ="logo">EveryKet</p>
+        <nav class = "navbar">
+            <a href = "http://localhost:8080/home.html">Home</a>
+            <a href = "http://localhost:8080/insert_product.html">Insert</a>
+            <a href = "#">Orders</a>
+            <a href = "#">Settings</a>
+        </nav>
+    </header><br><br><br><br>
+    <form id = "post">
+        <h1>Update Product</h1>
+        <input type = "text" id = "id" name = "id" hidden><br>
+        
+        <label for = "name">Name:</label><br>
+        <input type = "text" id = "name" required><br><br>
+
+        <label for = "description">Description:</label><br>
+        <textarea rows = '5' id = "description" required></textarea><br><br>
+
+        <label for = "price"> Price </label><br>
+        <input type = "number" id = "price" required><br><br>
+
+        <label for = "picture"> Image:</label><br>
+        <input type = "text" id = "picture" required><br><br>
+
+        <div id = "dynamicCategoryDataList">
+            <select name = "category_id" id = "category_id">
+                <option value = 0></option>
+            </select>
+        </div>
+        
+        <br>
+        <button type = "button" class = "pill"onclick = "updateProductData()">Submit</button>
+        <br>
+        <input type = "button" class = "pill" onclick = "deleteProductData(this)" restId = '' id = "deleteButton" value = 'Delete'>
+    </form>
+    <p class = "end">-- END OF PAGE --</p>
+</body>
