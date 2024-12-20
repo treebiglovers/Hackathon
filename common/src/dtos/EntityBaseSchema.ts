@@ -1,12 +1,12 @@
 import { z as zod } from "zod";
-import { isMongoId } from "class-validator";
+import { SnowflakeHelpers } from "../helpers/SnowflakeHelpers";
 
 export const EntityBaseSchema = zod.object(
 {
     id: zod
         .string()
         .refine(
-            id => isMongoId(id),
+            id => SnowflakeHelpers.isSnowflakeID(id),
             { message: "Invalid ID format!" }
         ),
 });

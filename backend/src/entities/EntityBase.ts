@@ -1,16 +1,19 @@
-import { ObjectId, PrimaryKey, SerializedPrimaryKey } from "@mikro-orm/mongodb";
-import { SnowflakeHelpers } from "@backend/helpers/SnowflakeHelpers";
+import { PrimaryKey, Property } from "@mikro-orm/mysql";
+import { SnowflakeHelpers } from "@common/helpers/SnowflakeHelpers";
 
 export abstract class EntityBase
 {
-    @PrimaryKey()
-    private _id!: ObjectId;
+    @PrimaryKey({ fieldName: "id" })
+    private _id!: bigint;
 
-    @SerializedPrimaryKey()
-    public id!: string;
+    @Property({ persist: false })
+    get id(): string
+    {
+        return this._id.toString();
+    }
 
-    // protected constructor()
-    // {
-    //     this.id = SnowflakeHelpers.generateSnowflake().toString();
-    // }
+    protected constructor()
+    {
+        this._id = SnowflakeHelpers.generateSnowflake().valueOf();
+    }
 }
