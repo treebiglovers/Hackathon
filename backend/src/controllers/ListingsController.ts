@@ -48,3 +48,14 @@ export const getListingsController = async (
         memberListings.map(x => MemberListingWithOwningMemberDTOSchema.parse(x))
     );
 }
+
+export const getListingsForAuthenticatedMemberController = async (
+    req: Request,
+    res: Response) =>
+{
+    const currentMember = getAuthenticatedMemberEntity(req);
+
+    res.json(
+        currentMember.listings.map(x => MemberListingDTOSchema.parse(x))
+    );
+};

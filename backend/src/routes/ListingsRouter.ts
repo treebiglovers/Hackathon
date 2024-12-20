@@ -3,7 +3,12 @@ import { JWTAuthMiddleware } from "@backend/middlewares/JWTAuthMiddleware";
 import { GetAuthenticatedMemberMiddleware } from "@backend/middlewares/GetAuthenticatedMemberMiddleware";
 import { ValidateSchemaMiddleware, ValidateSchemaMiddlewareKeyed } from "@backend/middlewares/ValidateSchemaMiddleware";
 
-import { createListingController, getListingsController } from "@backend/controllers/ListingsController";
+import
+{
+    createListingController,
+    getListingsController,
+    getListingsForAuthenticatedMemberController,
+} from "@backend/controllers/ListingsController";
 import { MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
 import { PaginatedRequestDTOSchema } from "@common/dtos/PaginatedRequestDTO";
 
@@ -26,4 +31,13 @@ LISTINGS_ROUTER.get(
         ValidateSchemaMiddlewareKeyed({ schema: PaginatedRequestDTOSchema, isQueryParam: true })
     ],
     getListingsController
+);
+
+LISTINGS_ROUTER.get(
+    "/me",
+    [
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([ "listings" ]),
+    ],
+    getListingsForAuthenticatedMemberController
 );
