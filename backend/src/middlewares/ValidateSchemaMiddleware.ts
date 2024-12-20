@@ -42,7 +42,15 @@ export const ValidateSchemaMiddleware = (
         );
     }
 
-    req.body = parsedResult.data;
+    if (isQueryParam)
+    {
+        req.query = parsedResult.data;
+    }
+    
+    else
+    {    
+        req.body = parsedResult.data;
+    }
 
     next();
 }
