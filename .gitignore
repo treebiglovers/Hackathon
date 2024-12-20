@@ -67,3 +67,5 @@ package-lock.json
 
 # Added by TrumpMcDonaldz
 .env
+/backend/dist/
+/frontend/src/routeTree.gen.ts

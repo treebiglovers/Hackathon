@@ -1,15 +1,18 @@
 {
-  "name": "e_commerce",
-  "version": "1.0.0",
-  "description": "e commerce sql",
-  "main": "server.js",
+  "name": "FWEB",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "common"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf node_modules && rm -rf */node_modules && rm -rf */dist",
+    "install-packages": "npm install",
+    "reinstall-packages": "npm run clean && npm run install-packages",
+    "fullstack-dev": "concurrently --kill-others \"npm --prefix backend run backend-dev\" \"npm --prefix frontend run frontend-dev\""
   },
-  "author": "Jeremy",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
-    "mysql2": "^3.9.1"
+    "concurrently": "^9.1.0"
   }
 }

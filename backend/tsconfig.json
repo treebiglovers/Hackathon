@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@common/*": [ "../common/src/*" ],
+      "@backend/*": [ "./src/*" ],
+    },
+    "skipLibCheck": true,
+  },
+  "include": [ "./src", "../common/src" ],
+  "exclude": [ "../node_modules" ],
+}

@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "target": "ES2022",
+        "module": "commonjs",
+        "lib": [ "ES2023" ]
+    },
+    "include": [ "**/*.ts" ],
+    "exclude": [ "node_modules" ]
+}
