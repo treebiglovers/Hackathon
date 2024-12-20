@@ -33,11 +33,13 @@ export const MemberListingDTOSchema = OptionalEntityBaseSchema.extend(
         .number()
         .int()
         .nonnegative()
+        .nullable()
         .optional(),
     
     price: zod
         .number()
         .nonnegative()
+        .nullable()
         .optional(),
 });
 
