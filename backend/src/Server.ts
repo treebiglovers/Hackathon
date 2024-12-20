@@ -3,7 +3,7 @@ import "reflect-metadata";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import { EntityManager, EntityRepository, MikroORM, RequestContext } from "@mikro-orm/mysql";
-import { MemberEntity, MemberCredentialsEntity } from "./entities";
+import { MemberEntity, MemberCredentialsEntity, MemberListingEntity } from "./entities";
 import { API_ROUTER } from "./routes/APIRouter";
 import { ResponseHelpers } from "@backend/helpers/ResponseHelpers";
 import { ErrorDTO } from "@common/dtos/errors/ErrorDTO";
@@ -17,6 +17,7 @@ export const DI = {} as
     entityManager: EntityManager,
     memberRepo: EntityRepository<MemberEntity>,
     memberCredentialsRepo: EntityRepository<MemberCredentialsEntity>,
+    memberListingsRepo: EntityRepository<MemberListingEntity>,
 };
 
 dotenv.config();
@@ -35,6 +36,7 @@ export const startAsync = (async () =>
 
     DI.memberRepo = entityManager.getRepository(MemberEntity);
     DI.memberCredentialsRepo = entityManager.getRepository(MemberCredentialsEntity);
+    DI.memberListingsRepo = entityManager.getRepository(MemberListingEntity);
 
     const CORS_OPTIONS =
     {
