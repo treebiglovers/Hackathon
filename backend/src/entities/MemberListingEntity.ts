@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/mysql";
+import { Entity, Enum, ManyToOne, Property } from "@mikro-orm/mysql";
 import { EntityBase, MemberEntity } from "./";
 import { MemberListingDTO, MemberListingState } from "@common/dtos/members/listings/MemberListingDTO";
 
@@ -19,9 +19,9 @@ export class MemberListingEntity extends EntityBase
 
     @Property({ nullable: true, columnType: "int" })
     price: number | null;
-    
-    @Property()
-    state: number;
+
+    @Enum(() => MemberListingState)
+    state: MemberListingState;
     
     @ManyToOne(() => MemberEntity)
     owningMember: MemberEntity;

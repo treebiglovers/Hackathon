@@ -208,13 +208,13 @@
         },
         "state": {
           "name": "state",
-          "type": "int",
+          "type": "tinyint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "length": null,
-          "mappedType": "integer"
+          "mappedType": "enum"
         },
         "owning_member_id": {
           "name": "owning_member_id",
