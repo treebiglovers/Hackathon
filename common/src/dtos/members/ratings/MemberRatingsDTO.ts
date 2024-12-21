@@ -6,8 +6,8 @@ export const MemberRatingsDTOSchema = OptionalEntityBaseSchema.extend(
 {
     title: zod
         .string()
-        .min(LimitConstants.MIN_RATING)
-        .max(LimitConstants.MAX_NAME_LENGTH),
+        .min(LimitConstants.MIN_RATING_TITLE_LENGTH)
+        .max(LimitConstants.MAX_RATING_TITLE_LENGTH),
     
     description: zod
         .string()
