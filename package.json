@@ -13,6 +13,7 @@
     "fullstack-dev": "concurrently --kill-others \"npm --prefix backend run backend-dev\" \"npm --prefix frontend run frontend-dev\""
   },
   "dependencies": {
+    "@mantine/carousel": "^7.15.1",
     "@mikro-orm/cli": "^6.4.1",
     "@mikro-orm/core": "^6.4.1",
     "concurrently": "^9.1.0",
