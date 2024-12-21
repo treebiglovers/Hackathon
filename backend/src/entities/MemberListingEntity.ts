@@ -3,14 +3,15 @@ import { EntityBase, MemberEntity } from "./";
 import { MemberListingDTO, MemberListingState } from "@common/dtos/members/listings/MemberListingDTO";
 import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
 import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
+import { LimitConstants } from "@common/constants/LimitConstants";
 
 @Entity()
 export class MemberListingEntity extends EntityBase
 {
-    @Property()
+    @Property({ length: LimitConstants.MAX_LISTING_TITLE_LENGTH })
     title: string;
     
-    @Property()
+    @Property({ length: LimitConstants.MAX_LISTING_DESCRIPTION_LENGTH })
     description: string;
 
     @Property({ nullable: true })

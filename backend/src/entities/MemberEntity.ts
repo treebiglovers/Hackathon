@@ -3,11 +3,12 @@ import { EntityBase, MemberCredentialsEntity } from "./";
 import { MemberListingEntity } from "@backend/entities/MemberListingEntity";
 import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
 import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
+import { LimitConstants } from "@common/constants/LimitConstants";
 
 @Entity()
 export class MemberEntity extends EntityBase
 {
-    @Property()
+    @Property({ length: LimitConstants.MAX_NAME_LENGTH })
     name: string;
 
     @Property({ nullable: true })

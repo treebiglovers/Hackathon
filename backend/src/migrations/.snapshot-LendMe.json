@@ -15,12 +15,12 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "password_hash": {
@@ -75,12 +75,12 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "avatar_url": {
@@ -158,22 +158,22 @@
         },
         "title": {
           "name": "title",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "description": {
           "name": "description",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 500,
           "mappedType": "string"
         },
         "icon_url": {
