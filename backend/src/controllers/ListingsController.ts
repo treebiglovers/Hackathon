@@ -70,6 +70,27 @@ const LISTING_NOT_FOUND_ERROR = ErrorDTO.fromCustom("Listing not found.");
 
 const LISTING_NOT_OWNED_ERROR = ErrorDTO.fromCustom("You do not own this listing.");
 
+export const getListingController = async (
+    req: Request,
+    res: Response) =>
+{
+    const memberListingsRepo = DI.memberListingsRepo;
+
+    const memberListing = await memberListingsRepo.findOne(
+        { id: req.params.id }
+    );
+    
+    if (memberListing === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            LISTING_NOT_FOUND_ERROR
+        );
+    }
+
+    res.json(MemberListingWithOwningMemberDTOSchema.parse(memberListing));
+};
+
 export const updateListingController = async (
     req: Request,
     res: Response) =>

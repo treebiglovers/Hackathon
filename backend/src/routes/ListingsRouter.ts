@@ -5,9 +5,12 @@ import { ValidateSchemaMiddleware, ValidateSchemaMiddlewareKeyed } from "@backen
 
 import
 {
-    createListingController, deleteListingController,
+    createListingController,
     getListingsController,
-    getListingsForAuthenticatedMemberController, updateListingController,
+    getListingsForAuthenticatedMemberController,
+    getListingController,
+    updateListingController,
+    deleteListingController,
 } from "@backend/controllers/ListingsController";
 import { MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
 import { PaginatedRequestDTOSchema } from "@common/dtos/PaginatedRequestDTO";
@@ -41,6 +44,11 @@ LISTINGS_ROUTER.get(
         GetAuthenticatedMemberMiddleware([ "listings" ]),
     ],
     getListingsForAuthenticatedMemberController
+);
+
+LISTINGS_ROUTER.get(
+    "/:id",
+    getListingController
 );
 
 LISTINGS_ROUTER.put(
