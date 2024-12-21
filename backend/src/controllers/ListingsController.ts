@@ -1,5 +1,9 @@
 import { Request, response, Response } from "express";
-import { MemberListingDTO, MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
+import {
+    MemberListingDTO,
+    MemberListingDTOSchema,
+    MemberListingState
+} from "@common/dtos/members/listings/MemberListingDTO";
 import { MemberEntity, MemberListingEntity } from "@backend/entities";
 import { getAuthenticatedMemberEntity } from "@backend/middlewares/GetAuthenticatedMemberMiddleware";
 import { DI } from "@backend/Server";
@@ -176,6 +180,8 @@ export const deleteListingController = async (
     );
 }
 
+const CUSTOMER_NOT_FOUND_ERROR = ErrorDTO.fromCustom("Customer not found.");
+
 const listingChatMessagesEnsureValidParameters = async (
     res: Response,
     authenticatedMember: MemberEntity,
@@ -195,7 +201,7 @@ const listingChatMessagesEnsureValidParameters = async (
         {
             ResponseHelpers.respondWithNotFoundError(
                 res,
-                ErrorDTO.fromCustom("Customer not found.")
+                CUSTOMER_NOT_FOUND_ERROR
             );
             
             return null;
@@ -273,7 +279,10 @@ export const getListingChatMessagesController = async (
     const memberListingChatsRepo = DI.memberListingChatsRepo;
 
     const memberListingChat = await memberListingChatsRepo.findOne(
-        { listing: memberListing, customerMember: customerEntity }
+        { 
+            listing: memberListing,
+            customerMember: customerEntity
+        }
     );
 
     if (memberListingChat === null)
@@ -319,7 +328,10 @@ export const postListingChatMessagesController = async (
     const memberListingChatsRepo = DI.memberListingChatsRepo;
 
     let memberListingChat = await memberListingChatsRepo.findOne(
-        { listing: memberListing, customerMember: customerEntity }
+        { 
+            listing: memberListing,
+            customerMember: customerEntity
+        }
     );
 
     const entityManager = DI.entityManager;
@@ -346,3 +358,76 @@ export const postListingChatMessagesController = async (
         ListingChatMessageCreateDTOSchema.parse(chatMessageEntity)
     );
 }
+
+export const finalizeListingController = async (
+    req: Request,
+    res: Response) =>
+{
+    const params = req.params;
+
+    const authenticatedMember = getAuthenticatedMemberEntity(req);
+    
+    const memberListingsRepo = DI.memberListingsRepo;
+    
+    const memberListing = await memberListingsRepo.findOne(
+        { id: params.listingID }
+    );
+    
+    if (memberListing === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            LISTING_NOT_FOUND_ERROR
+        );
+    }
+    
+    if (memberListing.owningMember.id !== authenticatedMember.id)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            LISTING_NOT_OWNED_ERROR
+        );
+    }
+    
+    const memberRepo = DI.memberRepo;
+    
+    const customerMember = await memberRepo.findOne({ id: params.customerID });
+    
+    if (customerMember === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            CUSTOMER_NOT_FOUND_ERROR
+        );
+    }
+    
+    const memberListingChatsRepo = DI.memberListingChatsRepo;
+    
+    const memberListingChat = await memberListingChatsRepo.findOne(
+        { 
+            listing: memberListing,
+            customerMember: customerMember
+        }
+    );
+    
+    if (memberListingChat === null)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("No chat exists between you and this customer.")
+        );
+    }
+    
+    memberListingChat.finalized = true;
+    
+    memberListing.state = MemberListingState.FINALIZED;
+    
+    await DI.entityManager.flush();
+    
+    ResponseHelpers.respondWithSuccessMessage(
+        res,
+        "Listing finalized."
+    );
+}
+
+

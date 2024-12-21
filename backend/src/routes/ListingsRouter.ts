@@ -10,7 +10,10 @@ import
     getListingsForAuthenticatedMemberController,
     getListingController,
     updateListingController,
-    deleteListingController, getListingChatMessagesController, postListingChatMessagesController,
+    deleteListingController,
+    getListingChatMessagesController,
+    postListingChatMessagesController,
+    finalizeListingController,
 } from "@backend/controllers/ListingsController";
 import { MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
 import { PaginatedRequestDTOSchema } from "@common/dtos/PaginatedRequestDTO";
@@ -99,3 +102,12 @@ LISTINGS_ROUTER.post(
     ],
     postListingChatMessagesController
 );
+
+LISTINGS_ROUTER.post(
+    "/:listingID/finalize/:customerID",
+    [
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    finalizeListingController
+)
