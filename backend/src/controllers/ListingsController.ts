@@ -389,6 +389,14 @@ export const finalizeListingController = async (
         );
     }
     
+    if (memberListing.state === MemberListingState.FINALIZED)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("Listing already finalized.")
+        );
+    }
+    
     const memberRepo = DI.memberRepo;
     
     const customerMember = await memberRepo.findOne({ id: params.customerID });
@@ -429,5 +437,4 @@ export const finalizeListingController = async (
         "Listing finalized."
     );
 }
-
 
