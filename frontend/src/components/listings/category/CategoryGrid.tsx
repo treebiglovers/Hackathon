@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     IconBuildingBank,
     IconCreditCard,
@@ -29,6 +29,14 @@ import {
   export function CategoryGrid() {
     const theme = useMantineTheme();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+        if (!hasLoaded) {
+            setSelectedCategory('Credit cards'); // Default category change from this placeholder
+            setHasLoaded(true);
+        }
+    }, [hasLoaded]);
 
     const handleCategoryChange = (category: string) => {
         setSelectedCategory((prev) => (prev === category ? null : category));
