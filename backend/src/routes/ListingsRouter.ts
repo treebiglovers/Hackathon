@@ -10,11 +10,12 @@ import
     getListingsForAuthenticatedMemberController,
     getListingController,
     updateListingController,
-    deleteListingController,
+    deleteListingController, getListingChatMessagesController, postListingChatMessagesController,
 } from "@backend/controllers/ListingsController";
 import { MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
 import { PaginatedRequestDTOSchema } from "@common/dtos/PaginatedRequestDTO";
 import { MemberListingUpdateDTOSchema } from "@common/dtos/members/listings/MemberListingUpdateDTO";
+import { ListingChatMessageCreateDTOSchema } from "@common/dtos/members/listings/chats/ListingChatMessageCreateDTO";
 
 export const LISTINGS_ROUTER = express.Router();
 
@@ -68,4 +69,33 @@ LISTINGS_ROUTER.delete(
         GetAuthenticatedMemberMiddleware([]),
     ],
     deleteListingController
+);
+
+LISTINGS_ROUTER.get(
+    "/:listingID/messages/",
+    [
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    getListingChatMessagesController
+);
+
+LISTINGS_ROUTER.get(
+    "/:listingID/messages/:customerID",
+    [
+        ValidateSchemaMiddlewareKeyed({ schema: PaginatedRequestDTOSchema, isQueryParam: true }),
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    getListingChatMessagesController
+);
+
+LISTINGS_ROUTER.post(
+    "/:listingID/messages",
+    [
+        ValidateSchemaMiddleware(ListingChatMessageCreateDTOSchema),
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    postListingChatMessagesController
 );

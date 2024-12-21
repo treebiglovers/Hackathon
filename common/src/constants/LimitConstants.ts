@@ -14,4 +14,7 @@ export class LimitConstants
 
     public static readonly MIN_LISTING_DESCRIPTION_LENGTH = 20;
     public static readonly MAX_LISTING_DESCRIPTION_LENGTH = 500;
+    
+    public static readonly MIN_LISTING_CHAT_MESSAGE_LENGTH = 1;
+    public static readonly MAX_LISTING_CHAT_MESSAGE_LENGTH = 500;
 }

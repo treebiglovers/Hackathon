@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { MemberListingDTO, MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
-import { MemberListingEntity } from "@backend/entities";
+import { MemberEntity, MemberListingEntity } from "@backend/entities";
 import { getAuthenticatedMemberEntity } from "@backend/middlewares/GetAuthenticatedMemberMiddleware";
 import { DI } from "@backend/Server";
 import { ResponseHelpers } from "@backend/helpers/ResponseHelpers";
@@ -16,6 +16,16 @@ import
     MemberListingUpdateDTO,
     MemberListingUpdateDTOSchema,
 } from "@common/dtos/members/listings/MemberListingUpdateDTO";
+import
+{
+    GetListingChatMessagesResponseDTOSchema
+} from "@common/dtos/members/listings/chats/GetListingChatMessagesResponseDTO";
+import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
+import {
+    ListingChatMessageCreateDTO,
+    ListingChatMessageCreateDTOSchema
+} from "@common/dtos/members/listings/chats/ListingChatMessageCreateDTO";
+import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
 
 export const createListingController = async (
     req: Request,
@@ -163,5 +173,176 @@ export const deleteListingController = async (
     ResponseHelpers.respondWithSuccessMessage(
         res,
         "Listing deleted."
+    );
+}
+
+const listingChatMessagesEnsureValidParameters = async (
+    res: Response,
+    authenticatedMember: MemberEntity,
+    listingID: string,
+    customerID: string | undefined
+): Promise<[ MemberListingEntity, customerEntity: MemberEntity ] | null> =>
+{
+    const memberRepo = DI.memberRepo;
+
+    let customerEntity: MemberEntity | null;
+
+    if (customerID !== undefined)
+    {
+        customerEntity = await memberRepo.findOne({ id: customerID  });
+
+        if (customerEntity === null)
+        {
+            ResponseHelpers.respondWithNotFoundError(
+                res,
+                ErrorDTO.fromCustom("Customer not found.")
+            );
+            
+            return null;
+        }
+
+        // If the customerID is provided, but the listing isn't owned by the authenticated member,
+        // return an error.
+
+        if (customerEntity.id !== authenticatedMember.id)
+        {
+            ResponseHelpers.respondWithBadRequestError(
+                res,
+                ErrorDTO.fromCustom("You cannot view another member's chat messages.")
+            );
+
+            return null;
+        }
+    }
+
+    else
+    {
+        customerEntity = authenticatedMember;
+    }
+
+    const memberListingsRepo = DI.memberListingsRepo;
+
+    const memberListing = await memberListingsRepo.findOne(
+        { id: listingID },
+        { populate: [ "owningMember" ] }
+    );
+
+    if (memberListing === null)
+    {
+        ResponseHelpers.respondWithNotFoundError(
+            res,
+            LISTING_NOT_FOUND_ERROR
+        );
+
+        return null;
+    }
+
+    if (memberListing.owningMember.id === customerEntity.id)
+    {
+        ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("You cannot message yourself.")
+        );
+
+        return null;
+    }
+
+    return [ memberListing, customerEntity ];
+}
+
+export const getListingChatMessagesController = async (
+    req: Request,
+    res: Response) =>
+{
+    const params = req.params;
+    
+    const results = await listingChatMessagesEnsureValidParameters(
+        res,
+        getAuthenticatedMemberEntity(req),
+        params.listingID,
+        params.customerID
+    );
+    
+    if (results === null)
+    {
+        return;
+    }
+    
+    const [ memberListing, customerEntity ] = results;
+    
+    const memberListingChatsRepo = DI.memberListingChatsRepo;
+
+    const memberListingChat = await memberListingChatsRepo.findOne(
+        { listing: memberListing, customerMember: customerEntity }
+    );
+
+    if (memberListingChat === null)
+    {
+        return res.json(
+            GetListingChatMessagesResponseDTOSchema.parse([])
+        );
+    }
+
+    const memberListingChatMessagesRepo = DI.memberListingChatMessagesRepo;
+
+    const chatMessages = await memberListingChatMessagesRepo.find(
+        { owningListingChat: memberListingChat }
+    );
+
+    return res.json(
+        GetListingChatMessagesResponseDTOSchema.parse(chatMessages)
+    );
+}
+
+export const postListingChatMessagesController = async (
+    req: Request,
+    res: Response) =>
+{
+    const params = req.params;
+
+    const authenticatedMember = getAuthenticatedMemberEntity(req);
+    
+    const results = await listingChatMessagesEnsureValidParameters(
+        res,
+        authenticatedMember,
+        params.listingID,
+        params.customerID
+    );
+
+    if (results === null)
+    {
+        return;
+    }
+    
+    const [ memberListing, customerEntity ] = results;
+
+    const memberListingChatsRepo = DI.memberListingChatsRepo;
+
+    let memberListingChat = await memberListingChatsRepo.findOne(
+        { listing: memberListing, customerMember: customerEntity }
+    );
+
+    const entityManager = DI.entityManager;
+
+    if (memberListingChat === null)
+    {
+        memberListingChat = new ListingChatEntity(memberListing, customerEntity);
+        entityManager.persist(memberListingChat);
+    }
+
+    // Create a new chat message
+
+    const chatMessageDTO: ListingChatMessageCreateDTO = req.body;
+
+    const chatMessageEntity = new ListingChatMessageEntity(
+        chatMessageDTO,
+        authenticatedMember,
+        memberListingChat,
+    );
+
+    await entityManager.persist(chatMessageEntity).flush();
+
+    res.json(
+        ListingChatMessageCreateDTOSchema.parse(chatMessageEntity)
     );
 }
