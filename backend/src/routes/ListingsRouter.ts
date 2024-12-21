@@ -110,4 +110,5 @@ LISTINGS_ROUTER.post(
         GetAuthenticatedMemberMiddleware([]),
     ],
     finalizeListingController
-)
+);
+
