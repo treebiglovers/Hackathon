@@ -12,7 +12,7 @@ export const Route = createFileRoute('/')({
       return (
           <Box>
               <Text>Listing</Text>
-              {memberData !== null ? <Text>Logged in</Text> : <Text>Not logged in</Text>}
+              {memberData !== null ? <Text>Logging in</Text> : <Text>Not logged in</Text>}
           </Box>
       );
   }
