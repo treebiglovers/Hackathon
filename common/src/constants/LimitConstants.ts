@@ -17,4 +17,13 @@ export class LimitConstants
     
     public static readonly MIN_LISTING_CHAT_MESSAGE_LENGTH = 1;
     public static readonly MAX_LISTING_CHAT_MESSAGE_LENGTH = 500;
+    
+    public static readonly MIN_RATING_TITLE_LENGTH = 1;
+    public static readonly MAX_RATING_TITLE_LENGTH = 50;
+    
+    public static readonly MIN_RATING_DESCRIPTION_LENGTH = 1;
+    public static readonly MAX_RATING_DESCRIPTION_LENGTH = 250;
+    
+    public static readonly MIN_RATING = 0;
+    public static readonly MAX_RATING = 5;
 }

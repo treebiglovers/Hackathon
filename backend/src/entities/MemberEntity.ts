@@ -4,6 +4,7 @@ import { MemberListingEntity } from "@backend/entities/MemberListingEntity";
 import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
 import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
 import { LimitConstants } from "@common/constants/LimitConstants";
+import { MemberRatingEntity } from "@backend/entities/MemberRatingEntity";
 
 @Entity()
 export class MemberEntity extends EntityBase
@@ -25,6 +26,12 @@ export class MemberEntity extends EntityBase
     
     @OneToMany(() => ListingChatMessageEntity, message => message.authorMember)
     listingChatMessages = new Collection<ListingChatMessageEntity>(this);
+    
+    @OneToMany(() => MemberRatingEntity, rating => rating.receivingMember)
+    ratingsReceived = new Collection<MemberRatingEntity>(this);
+    
+    @OneToMany(() => MemberRatingEntity, rating => rating.reviewingMember)
+    ratingsGiven = new Collection<MemberRatingEntity>(this);
     
     constructor(name: string, credentials: MemberCredentialsEntity)
     {
