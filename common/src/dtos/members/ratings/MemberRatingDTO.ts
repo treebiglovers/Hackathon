@@ -18,6 +18,7 @@ export const MemberRatingDTOSchema = OptionalEntityBaseSchema.extend(
     
     rating: zod
         .number()
+        .int()
         .min(LimitConstants.MIN_RATING)
         .max(LimitConstants.MAX_RATING),
 });
