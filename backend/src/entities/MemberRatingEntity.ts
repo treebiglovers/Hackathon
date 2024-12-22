@@ -3,7 +3,7 @@ import { Entity, ManyToOne, Property, Unique } from "@mikro-orm/mysql";
 import { MemberEntity } from "@backend/entities/MemberEntity";
 import { MemberListingEntity } from "@backend/entities/MemberListingEntity";
 import { LimitConstants } from "@common/constants/LimitConstants";
-import { MemberRatingsDTO } from "@common/dtos/members/ratings/MemberRatingsDTO";
+import { MemberRatingDTO } from "@common/dtos/members/ratings/MemberRatingDTO";
 
 @Entity()
 @Unique({ properties: [ "reviewingMember", "receivingMember", "listing" ] })
@@ -28,7 +28,7 @@ export class MemberRatingEntity extends EntityBase
     listing: MemberListingEntity;
     
     constructor(
-        memberRatingDTO: MemberRatingsDTO,
+        memberRatingDTO: MemberRatingDTO,
         reviewingMember: MemberEntity,
         receivingMember: MemberEntity,
         listing: MemberListingEntity
