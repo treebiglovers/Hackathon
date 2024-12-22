@@ -1,17 +1,24 @@
 import { Card, Text } from '@mantine/core';  
-import classes from './GiantBox.module.css';  
+import classes from './GiantBox.module.css';
+import { MemberListingDTO } from "@common/dtos/members/listings/MemberListingDTO.ts";  
 
-export function GiantBox() {  
+interface GiantBoxProps
+{
+    memberListingDTO: MemberListingDTO;
+}
+
+export function GiantBox({ memberListingDTO }: GiantBoxProps)
+{  
   return (
     <Card withBorder radius="md" className={classes.giantBox}>  
       <div className={classes.details}>  
-        <h2>Details</h2>
-        <p>This is the detail section where idk who man can add specific information.</p>
+        <h2>Description</h2>
+        <p>{memberListingDTO.description}</p>
       </div>
-      <div className={classes.description}>  
-        <h3>Description</h3>
-        <p>This is the description section where whoever can provide additional details or explanation.</p>
-      </div>
+      {/*<div className={classes.description}>  */}
+      {/*  <h3>Description</h3>*/}
+      {/*  <p>This is the description section where whoever can provide additional details or explanation.</p>*/}
+      {/*</div>*/}
       <div className={classes.extraInfo}>
         <div>
           <Text fw={600}>Listed Date:</Text>

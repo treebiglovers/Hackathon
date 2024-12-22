@@ -1,5 +1,5 @@
 import { IconUsers } from "@tabler/icons-react";
-import { Badge, Button, Card, Container, SimpleGrid, Center, Group, Image, Text, Box, Stack } from "@mantine/core";
+import { Badge, Button, Card, Container, SimpleGrid, Center, Group, Image, Text, Stack } from "@mantine/core";
 import classes from "./ListingComponent.module.css";
 import { useGetMemberListingsAsync } from "@app/apis/ListingAPIs.ts";
 import { CenteredImage } from "@app/components/images/CenteredImage.tsx";
@@ -8,9 +8,12 @@ import { ErrorComponent } from "@app/components/errors/ErrorComponent.tsx";
 import { MemberListingDTO } from "@common/dtos/members/listings/MemberListingDTO.ts";
 import { AssetPathConstants } from "@app/constants/AssetPathConstants";
 import { PlaceHolderHelpers } from "@app/helpers/PlaceHolderHelpers.ts";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Listing = () =>
 {
+    const navigate = useNavigate();
+    
     const
     {
         isLoading,
@@ -91,7 +94,11 @@ export const Listing = () =>
                             </Text>
                         </div>
 
-                        <Button radius="xl" style={{ flex: 1 }}>
+                        <Button 
+                            radius="xl"
+                            style={{ flex: 1 }}
+                            onClick={() => { navigate({to: `/listings/${listingDTO.id}`}).then() }}
+                        >
                             View Listing 
                         </Button>
                     </Group>

@@ -13,7 +13,6 @@ API_ROUTER.use(
 
 API_ROUTER.use(
     "/members",
-    [ JWTAuthMiddleware ],
     MEMBERS_ROUTER
 );
 
