@@ -6,6 +6,7 @@ import { DI } from "@backend/Server";
 import { ResponseHelpers } from "@backend/helpers/ResponseHelpers";
 import { ErrorDTO } from "@common/dtos/errors/ErrorDTO";
 import { MemberDTOSchema } from "@common/dtos/members/MemberDTO";
+import { MemberRatingDataDTOSchema } from "@common/dtos/members/ratings/MemberRatingDataDTO";
 
 export const getAuthenticatedMemberController = async (
     req: Request,
@@ -43,4 +44,37 @@ export const updateAuthenticatedMemberController = async (
     await DI.entityManager.flush();
 
     res.json(MemberUpdateDTOSchema.parse(memberEntity));
+}
+
+export const getRatingData = async (
+    req: Request,
+    res: Response
+) =>
+{
+    const member = await DI.memberRepo.findOne(
+        { id: req.params.id },
+        { populate: [ "ratingsReceived" ] }
+    );
+    
+    if (member === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            ErrorDTO.fromCustom("No such member!")
+        );
+    }
+    
+    let totalRating = 0;
+    let totalCount = 0;
+    
+    // Slow, but it is whatever at this point...
+    for (const rating of member.ratingsReceived)
+    {
+        totalRating += rating.rating;
+        totalCount++;
+    }
+    
+    return res.json(
+        MemberRatingDataDTOSchema.parse({ totalRating, totalCount })
+    );
 }

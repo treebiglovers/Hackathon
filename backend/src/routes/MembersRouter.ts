@@ -5,7 +5,7 @@ import { ValidateSchemaMiddleware } from "@backend/middlewares/ValidateSchemaMid
 import { MemberUpdateDTOSchema } from "@common/dtos/members/MemberUpdateDTO";
 import
 {
-    getAuthenticatedMemberController,
+    getAuthenticatedMemberController, getRatingData,
     updateAuthenticatedMemberController,
 } from "@backend/controllers/MembersController";
 
@@ -27,3 +27,7 @@ MEMBERS_ROUTER.put(
     updateAuthenticatedMemberController
 );
 
+MEMBERS_ROUTER.get(
+    "/:id/rating",
+    getRatingData
+);
