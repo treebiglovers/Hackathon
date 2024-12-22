@@ -1,5 +1,5 @@
-import { IconGasStation, IconGauge, IconManualGearbox, IconUsers } from "@tabler/icons-react";
-import { Badge, Button, Card, Container, SimpleGrid, Center, Group, Image, Text } from "@mantine/core";
+import { IconUsers } from "@tabler/icons-react";
+import { Badge, Button, Card, Container, SimpleGrid, Center, Group, Image, Text, Box, Stack } from "@mantine/core";
 import classes from "./ListingComponent.module.css";
 import { useGetMemberListingsAsync } from "@app/apis/ListingAPIs.ts";
 import { CenteredImage } from "@app/components/images/CenteredImage.tsx";
@@ -9,23 +9,8 @@ import { MemberListingDTO } from "@common/dtos/members/listings/MemberListingDTO
 import { AssetPathConstants } from "@app/constants/AssetPathConstants";
 import { PlaceHolderHelpers } from "@app/helpers/PlaceHolderHelpers.ts";
 
-const mockdata = 
-[
-    { label: '4 passengers', icon: IconUsers },
-    { label: '100 km/h in 4 seconds', icon: IconGauge },
-    { label: 'Automatic gearbox', icon: IconManualGearbox },
-    { label: 'Electric', icon: IconGasStation },
-];
-
 export const Listing = () =>
 {
-    const features = mockdata.map((feature) => (
-        <Center key={feature.label}>
-            <feature.icon size={16} className={classes.icon} stroke={1.5} />
-            <Text size="xs">{feature.label}</Text>
-        </Center>
-    ));
-
     const
     {
         isLoading,
@@ -53,37 +38,48 @@ export const Listing = () =>
         );
     }
     
-    const constructListing = (memberListingDTO: MemberListingDTO) =>
+    const constructListing = (listingDTO: MemberListingDTO) =>
     {
-        const iconURL = memberListingDTO.iconURL ?? PlaceHolderHelpers
+        const iconURL = listingDTO.iconURL ?? PlaceHolderHelpers
             .generatePlaceholderURL(460, 200);
+        
+        const priceText = listingDTO.price === null ?
+            "Free!" :
+            `$${listingDTO.price}`;
+        
+        const requiredStars = (
+            <Center key="RequiredStars">
+                <IconUsers size={16} className={classes.icon} stroke={1.5} />
+                <Text size="xs">Required Stars: {listingDTO.requiredStars ?? "NIL"}</Text>
+            </Center>
+        );
         
         return (
             <Card withBorder radius="md" className={classes.card}>
                 <Card.Section p={0} className={classes.imageSection}>
                     <Image
                         src={iconURL}
-                        alt={memberListingDTO.title}
+                        alt={listingDTO.title}
                     />
                 </Card.Section>
 
                 <Group justify="space-between" mt="md">
                     <div>
-                        <Text fw={500}>{memberListingDTO.title}</Text>
+                        <Text fw={500}>{listingDTO.title}</Text>
                         <Text fz="xs" c="dimmed">
-                            {memberListingDTO.description}
+                            {listingDTO.description}
                         </Text>
                     </div>
-                    <Badge variant="outline">25% off</Badge>
+                    <Badge variant="outline">Healthcare</Badge>
                 </Group>
 
                 <Card.Section className={classes.section} mt="md">
                     <Text fz="sm" c="dimmed" className={classes.label}>
-                        Basic configuration
+                        Info
                     </Text>
 
                     <Group gap={8} mb={-8}>
-                        {features}
+                        {requiredStars}
                     </Group>
                 </Card.Section>
 
@@ -91,15 +87,12 @@ export const Listing = () =>
                     <Group gap={30}>
                         <div>
                             <Text fz="xl" fw={700} style={{ lineHeight: 1 }}>
-                                $168.00
-                            </Text>
-                            <Text fz="sm" c="dimmed" fw={500} style={{ lineHeight: 1 }} mt={3}>
-                                per day
+                                {priceText}
                             </Text>
                         </div>
 
                         <Button radius="xl" style={{ flex: 1 }}>
-                            Rent now
+                            View Listing 
                         </Button>
                     </Group>
                 </Card.Section>
@@ -113,11 +106,24 @@ export const Listing = () =>
         </Fragment>
     );
 
+    const buttonText = !(isFetching || isFetchingNextPage) ?
+        (hasNextPage ? "Load More" : "Nothing more to load") :
+        "Loading more...";
+
     return (
-        <Container py="xl">
-            <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                {listing}
-            </SimpleGrid>
-        </Container>
+        <Stack align="center" p="xl">
+            <Container py="xl">
+                <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                    {listing}
+                </SimpleGrid>
+            </Container>
+            
+            <Button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+            >
+                {buttonText}
+            </Button>
+        </Stack>
     );
 }
