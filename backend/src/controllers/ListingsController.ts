@@ -30,6 +30,9 @@ import {
     ListingChatMessageCreateDTOSchema
 } from "@common/dtos/members/listings/chats/ListingChatMessageCreateDTO";
 import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
+import { EntityRepository } from "@mikro-orm/mysql";
+import { MemberRatingEntity } from "@backend/entities/MemberRatingEntity";
+import { MemberRatingDTO, MemberRatingDTOSchema } from "@common/dtos/members/ratings/MemberRatingDTO";
 
 export const createListingController = async (
     req: Request,
@@ -193,6 +196,7 @@ const listingChatMessagesEnsureValidParameters = async (
 
     let customerEntity: MemberEntity | null;
 
+    // If the customerID is provided, ensure that the customer exists and is the authenticated member.
     if (customerID !== undefined)
     {
         customerEntity = await memberRepo.findOne({ id: customerID  });
@@ -435,6 +439,122 @@ export const finalizeListingController = async (
     ResponseHelpers.respondWithSuccessMessage(
         res,
         "Listing finalized."
+    );
+}
+
+const tryGetExistingRating = async (
+    memberRatingRepo: EntityRepository<MemberRatingEntity>,
+    memberListingEntity: MemberListingEntity,
+    reviewingMember: MemberEntity,
+    reviewedMember: MemberEntity,
+) =>
+{
+    return memberRatingRepo.findOne(
+        { 
+            listing: memberListingEntity,
+            reviewingMember: reviewingMember,
+            receivingMember: reviewedMember
+        }
+    );
+}
+
+export const rateListingController = async (
+    req: Request,
+    res: Response) =>
+{
+    const params = req.params;
+
+    const authenticatedMember = getAuthenticatedMemberEntity(req);
+
+    const memberListingsRepo = DI.memberListingsRepo;
+
+    const memberListing = await memberListingsRepo.findOne(
+        { id: params.listingID },
+        { populate: [ "owningMember" ] }
+    );
+
+    if (memberListing === null)
+    {
+        return ResponseHelpers.respondWithNotFoundError(
+            res,
+            LISTING_NOT_FOUND_ERROR
+        );
+    }
+    
+    if (memberListing.state !== MemberListingState.FINALIZED)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("Listing not yet finalized.")
+        );
+    }
+    
+    const isCustomer = memberListing.owningMember.id !== authenticatedMember.id;
+    
+    // For now, we assume there will only ever be one finalized chat.
+    
+    const memberListingChatsRepo = DI.memberListingChatsRepo;
+    
+    const memberListingChat = await memberListingChatsRepo.findOne(
+        { listing: memberListing, finalized: true }
+    );
+    
+    if (memberListingChat === null)
+    {
+        return ResponseHelpers.respondWithBadRequestError(
+            res,
+            ErrorDTO.fromCustom("No finalized chat exists for this listing. This implies corrupted state.")
+        );
+    }
+    
+    const targetMember = isCustomer ?
+        memberListing.owningMember :
+        memberListingChat.customerMember;
+    
+    const ratingDTO: MemberRatingDTO = req.body;
+    
+    const entityManager = DI.entityManager;
+    
+    let rating: MemberRatingEntity;
+    
+    try
+    {
+        rating = new MemberRatingEntity(
+            ratingDTO,
+            authenticatedMember,
+            targetMember,
+            memberListing
+        );
+
+        await entityManager.persist(rating).flush();
+    }
+    
+    catch (error)
+    {
+        entityManager.clear();
+        
+        const memberRatingRepo = DI.memberRatingRepo;
+        
+        const existingRating = await tryGetExistingRating(
+            memberRatingRepo,
+            memberListing,
+            authenticatedMember,
+            targetMember
+        );
+        
+        if (existingRating !== null)
+        {
+            return ResponseHelpers.respondWithBadRequestError(
+                res,
+                ErrorDTO.fromCustom("Rating already exists.")
+            );
+        }
+        
+        throw error;
+    }
+
+    return res.json(
+        MemberRatingDTOSchema.parse(rating)
     );
 }
 

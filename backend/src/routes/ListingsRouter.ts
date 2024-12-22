@@ -1,6 +1,9 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { JWTAuthMiddleware } from "@backend/middlewares/JWTAuthMiddleware";
-import { GetAuthenticatedMemberMiddleware } from "@backend/middlewares/GetAuthenticatedMemberMiddleware";
+import
+{ 
+    GetAuthenticatedMemberMiddleware
+} from "@backend/middlewares/GetAuthenticatedMemberMiddleware";
 import { ValidateSchemaMiddleware, ValidateSchemaMiddlewareKeyed } from "@backend/middlewares/ValidateSchemaMiddleware";
 
 import
@@ -14,11 +17,13 @@ import
     getListingChatMessagesController,
     postListingChatMessagesController,
     finalizeListingController,
+    rateListingController,
 } from "@backend/controllers/ListingsController";
 import { MemberListingDTOSchema } from "@common/dtos/members/listings/MemberListingDTO";
 import { PaginatedRequestDTOSchema } from "@common/dtos/PaginatedRequestDTO";
 import { MemberListingUpdateDTOSchema } from "@common/dtos/members/listings/MemberListingUpdateDTO";
 import { ListingChatMessageCreateDTOSchema } from "@common/dtos/members/listings/chats/ListingChatMessageCreateDTO";
+import { MemberRatingDTOSchema } from "@common/dtos/members/ratings/MemberRatingDTO";
 
 export const LISTINGS_ROUTER = express.Router();
 
@@ -112,3 +117,12 @@ LISTINGS_ROUTER.post(
     finalizeListingController
 );
 
+LISTINGS_ROUTER.post(
+    "/:listingID/rate",
+    [
+        ValidateSchemaMiddleware(MemberRatingDTOSchema),
+        JWTAuthMiddleware,
+        GetAuthenticatedMemberMiddleware([]),
+    ],
+    rateListingController
+);
