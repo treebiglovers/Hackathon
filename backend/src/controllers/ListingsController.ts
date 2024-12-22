@@ -94,7 +94,8 @@ export const getListingController = async (
     const memberListingsRepo = DI.memberListingsRepo;
 
     const memberListing = await memberListingsRepo.findOne(
-        { id: req.params.id }
+        { id: req.params.id },
+        { populate: [ "owningMember" ] }
     );
     
     if (memberListing === null)
