@@ -7,6 +7,7 @@ import { useGetMemberRatingDataAsync } from "@app/apis/MemberAPIs.ts";
 import { CenteredImage } from "@app/components/images/CenteredImage.tsx";
 import { ErrorComponent } from "@app/components/errors/ErrorComponent.tsx";
 import { AssetPathConstants } from "@app/constants/AssetPathConstants.ts";
+import { useMemberData } from "@app/services/MemberService.ts";
 
 interface FeaturesCardProps
 {
@@ -22,6 +23,10 @@ export function FeaturesCard({ memberDTO }: FeaturesCardProps)
         error,
         data,
     } = useGetMemberRatingDataAsync(memberDTO.id!);
+    
+    const memberData = useMemberData(
+        state => state.memberData
+    );
 
     if (isLoading)
     {
@@ -82,7 +87,11 @@ export function FeaturesCard({ memberDTO }: FeaturesCardProps)
 
             <Card.Section className={classes.section}>
                 <Group gap={30}>
-                    <Button radius="x1" style={{ flex: 1, marginTop: 100, height: 50 }}>
+                    <Button 
+                        radius="x1"
+                        style={{ flex: 1, marginTop: 100, height: 50 }}
+                        disabled={memberData === null}
+                    >
                         Chat Now
                     </Button>
                 </Group>
