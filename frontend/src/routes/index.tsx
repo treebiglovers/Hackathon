@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Box, Text } from "@mantine/core";
-import { useMemberData } from "@app/services/MemberService.ts";
-import { Listings } from "@app/components/listings/Listings.tsx";
+import { Listing } from "@app/components/listings/ListingComponent.tsx";
 
 export const Route = createFileRoute('/')({
   component: () =>
@@ -17,6 +15,6 @@ export const Route = createFileRoute('/')({
       //     </Box>
       // );
       
-      return <Listings />;
+      return <Listing />;
   }
 });
