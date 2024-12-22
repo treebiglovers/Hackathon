@@ -4,7 +4,6 @@ import classes from "./ListingComponent.module.css";
 
 export const Listing = () =>
 {
-    
     const singleBadge =  (
         <Badge variant="light" key={"hi"}>
             Hi

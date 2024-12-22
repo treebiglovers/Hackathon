@@ -1,14 +1,17 @@
-import { Entity, Enum, ManyToOne, Property } from "@mikro-orm/mysql";
+import { Collection, Entity, Enum, ManyToOne, OneToMany, Property } from "@mikro-orm/mysql";
 import { EntityBase, MemberEntity } from "./";
 import { MemberListingDTO, MemberListingState } from "@common/dtos/members/listings/MemberListingDTO";
+import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
+import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
+import { LimitConstants } from "@common/constants/LimitConstants";
 
 @Entity()
 export class MemberListingEntity extends EntityBase
 {
-    @Property()
+    @Property({ length: LimitConstants.MAX_LISTING_TITLE_LENGTH })
     title: string;
     
-    @Property()
+    @Property({ length: LimitConstants.MAX_LISTING_DESCRIPTION_LENGTH })
     description: string;
 
     @Property({ nullable: true })
@@ -25,6 +28,9 @@ export class MemberListingEntity extends EntityBase
     
     @ManyToOne(() => MemberEntity)
     owningMember: MemberEntity;
+    
+    @OneToMany(() => ListingChatEntity, listingChat => listingChat.listing)
+    chats = new Collection<ListingChatEntity>(this);
     
     constructor(memberListingDTO: MemberListingDTO, owningMember: MemberEntity)
     {

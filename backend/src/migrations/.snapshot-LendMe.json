@@ -15,12 +15,12 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "password_hash": {
@@ -75,12 +75,12 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "avatar_url": {
@@ -158,22 +158,22 @@
         },
         "title": {
           "name": "title",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 50,
           "mappedType": "string"
         },
         "description": {
           "name": "description",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 500,
           "mappedType": "string"
         },
         "icon_url": {
@@ -262,6 +262,397 @@
             "id"
           ],
           "referencedTableName": "member_entity",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "customer_member_id": {
+          "name": "customer_member_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "finalized": {
+          "name": "finalized",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 1,
+          "default": "false",
+          "mappedType": "boolean"
+        }
+      },
+      "name": "listing_chat_entity",
+      "indexes": [
+        {
+          "columnNames": [
+            "listing_id"
+          ],
+          "composite": false,
+          "keyName": "listing_chat_entity_listing_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "customer_member_id"
+          ],
+          "composite": false,
+          "keyName": "listing_chat_entity_customer_member_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "listing_chat_entity_listing_id_customer_member_id_unique",
+          "columnNames": [
+            "listing_id",
+            "customer_member_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "listing_chat_entity_listing_id_foreign": {
+          "constraintName": "listing_chat_entity_listing_id_foreign",
+          "columnNames": [
+            "listing_id"
+          ],
+          "localTableName": "listing_chat_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_listing_entity",
+          "updateRule": "cascade"
+        },
+        "listing_chat_entity_customer_member_id_foreign": {
+          "constraintName": "listing_chat_entity_customer_member_id_foreign",
+          "columnNames": [
+            "customer_member_id"
+          ],
+          "localTableName": "listing_chat_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_entity",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(500)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 500,
+          "mappedType": "string"
+        },
+        "author_member_id": {
+          "name": "author_member_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "owning_listing_chat_id": {
+          "name": "owning_listing_chat_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        }
+      },
+      "name": "listing_chat_message_entity",
+      "indexes": [
+        {
+          "columnNames": [
+            "author_member_id"
+          ],
+          "composite": false,
+          "keyName": "listing_chat_message_entity_author_member_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "owning_listing_chat_id"
+          ],
+          "composite": false,
+          "keyName": "listing_chat_message_entity_owning_listing_chat_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "listing_chat_message_entity_author_member_id_foreign": {
+          "constraintName": "listing_chat_message_entity_author_member_id_foreign",
+          "columnNames": [
+            "author_member_id"
+          ],
+          "localTableName": "listing_chat_message_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_entity",
+          "updateRule": "cascade"
+        },
+        "listing_chat_message_entity_owning_listing_chat_id_foreign": {
+          "constraintName": "listing_chat_message_entity_owning_listing_chat_id_foreign",
+          "columnNames": [
+            "owning_listing_chat_id"
+          ],
+          "localTableName": "listing_chat_message_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "listing_chat_entity",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(250)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 250,
+          "mappedType": "string"
+        },
+        "rating": {
+          "name": "rating",
+          "type": "tinyint",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "tinyint"
+        },
+        "reviewing_member_id": {
+          "name": "reviewing_member_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "receiving_member_id": {
+          "name": "receiving_member_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "bigint",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "bigint"
+        }
+      },
+      "name": "member_rating_entity",
+      "indexes": [
+        {
+          "columnNames": [
+            "reviewing_member_id"
+          ],
+          "composite": false,
+          "keyName": "member_rating_entity_reviewing_member_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "receiving_member_id"
+          ],
+          "composite": false,
+          "keyName": "member_rating_entity_receiving_member_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "listing_id"
+          ],
+          "composite": false,
+          "keyName": "member_rating_entity_listing_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "member_rating_entity_reviewing_member_id_receiving_c1d3d_unique",
+          "columnNames": [
+            "reviewing_member_id",
+            "receiving_member_id",
+            "listing_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "member_rating_entity_reviewing_member_id_foreign": {
+          "constraintName": "member_rating_entity_reviewing_member_id_foreign",
+          "columnNames": [
+            "reviewing_member_id"
+          ],
+          "localTableName": "member_rating_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_entity",
+          "updateRule": "cascade"
+        },
+        "member_rating_entity_receiving_member_id_foreign": {
+          "constraintName": "member_rating_entity_receiving_member_id_foreign",
+          "columnNames": [
+            "receiving_member_id"
+          ],
+          "localTableName": "member_rating_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_entity",
+          "updateRule": "cascade"
+        },
+        "member_rating_entity_listing_id_foreign": {
+          "constraintName": "member_rating_entity_listing_id_foreign",
+          "columnNames": [
+            "listing_id"
+          ],
+          "localTableName": "member_rating_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "member_listing_entity",
           "updateRule": "cascade"
         }
       },

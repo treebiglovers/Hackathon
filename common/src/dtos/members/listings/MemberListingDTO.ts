@@ -5,8 +5,7 @@ import { LimitConstants } from "../../../constants/LimitConstants";
 export enum MemberListingState
 {
     AVAILABLE = 0,
-    RESERVED = 1,
-    CLOSED = 2,
+    FINALIZED = 2,
 }
 
 export const MemberListingDTOSchema = OptionalEntityBaseSchema.extend(
@@ -41,6 +40,9 @@ export const MemberListingDTOSchema = OptionalEntityBaseSchema.extend(
         .nonnegative()
         .nullable()
         .optional(),
+    
+    state: zod
+        .nativeEnum(MemberListingState),
 });
 
 export type MemberListingDTO = zod.infer<typeof MemberListingDTOSchema>;

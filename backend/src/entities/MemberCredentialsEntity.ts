@@ -1,11 +1,12 @@
 import { Entity, OneToOne, Property, Unique } from "@mikro-orm/mysql";
 import { EntityBase, MemberEntity } from "./";
+import { LimitConstants } from "@common/constants/LimitConstants";
 
 @Entity()
 export class MemberCredentialsEntity extends EntityBase
 {
     @Unique()
-    @Property()
+    @Property({ length: LimitConstants.MAX_EMAIL_LENGTH })
     public email: string;
 
     @Property()
