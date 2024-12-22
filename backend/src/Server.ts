@@ -11,6 +11,7 @@ import cors from "cors";
 import defineConfig from "../src/mikro-orm.config";
 import { ListingChatEntity } from "@backend/entities/ListingChatEntity";
 import { ListingChatMessageEntity } from "@backend/entities/ListingChatMessageEntity";
+import { MemberRatingEntity } from "@backend/entities/MemberRatingEntity";
 
 export const DI = {} as
 {
@@ -20,8 +21,9 @@ export const DI = {} as
     memberRepo: EntityRepository<MemberEntity>,
     memberCredentialsRepo: EntityRepository<MemberCredentialsEntity>,
     memberListingsRepo: EntityRepository<MemberListingEntity>,
-    memberListingChatsRepo: EntityRepository<ListingChatEntity>
-    memberListingChatMessagesRepo: EntityRepository<ListingChatMessageEntity>
+    memberListingChatsRepo: EntityRepository<ListingChatEntity>,
+    memberListingChatMessagesRepo: EntityRepository<ListingChatMessageEntity>,
+    memberRatingRepo: EntityRepository<MemberRatingEntity>,
 };
 
 dotenv.config();
@@ -43,6 +45,7 @@ export const startAsync = (async () =>
     DI.memberListingsRepo = entityManager.getRepository(MemberListingEntity);
     DI.memberListingChatsRepo = entityManager.getRepository(ListingChatEntity);
     DI.memberListingChatMessagesRepo = entityManager.getRepository(ListingChatMessageEntity);
+    DI.memberRatingRepo = entityManager.getRepository(MemberRatingEntity);
 
     const CORS_OPTIONS =
     {
