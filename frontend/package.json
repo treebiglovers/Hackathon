@@ -9,6 +9,7 @@
     "frontend-preview": "vite preview"
   },
   "dependencies": {
+    "@mantine/carousel": "^7.15.1",
     "@mantine/core": "^7.15.1",
     "@mantine/hooks": "^7.15.1",
     "@mantine/notifications": "^7.15.1",
